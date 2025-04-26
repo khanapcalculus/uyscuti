@@ -1,0 +1,383 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-logo {
+  height: 40px;
+  margin-right: 15px;
+}
+
+.dashboard-header h1 {
+  font-size: 20px;
+  margin: 0;
+  color: #333;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.timezone-selector {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 250px;
+}
+
+.logout-button {
+  padding: 8px 16px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #e0e0e0;
+}
+
+.dashboard-main {
+  flex: 1;
+  padding: 30px;
+  background-color: #f5f7fa;
+}
+
+.calendar-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  width: 500px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="datetime-local"],
+.form-group select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.student-list {
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.student-item {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.student-item input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-button {
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.create-button, .share-button {
+  padding: 10px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.create-button:hover, .share-button:hover {
+  background-color: #3a7bc8;
+}
+
+.session-details {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.session-details h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.session-link {
+  margin-bottom: 20px;
+}
+
+.link-container {
+  display: flex;
+  gap: 10px;
+}
+
+.link-container input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.copy-button {
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.qr-code-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+/* Calendar customizations */
+.rbc-calendar {
+  font-family: 'Arial', sans-serif;
+}
+
+.rbc-event {
+  background-color: #4a90e2;
+}
+
+.rbc-today {
+  background-color: #f0f7ff;
+}
+
+.rbc-toolbar button {
+  color: #333;
+}
+
+.rbc-toolbar button.rbc-active {
+  background-color: #4a90e2;
+  color: white;
+}
+
+/* Add these additional fixes for the Invalid array length error */
+.test-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #ff9800;
+  color: white;
+}
+
+.test-button:hover {
+  background-color: #f57c00;
+}
+
+/* Additional fixes for calendar rendering issues */
+.rbc-calendar {
+  min-height: 300px !important;
+  height: auto !important;
+}
+
+.rbc-time-view, 
+.rbc-month-view, 
+.rbc-agenda-view {
+  height: auto !important;
+  min-height: 300px !important;
+  max-height: 500px !important;
+}
+
+/* Force fixed dimensions for time slots to prevent array length errors */
+.rbc-time-column {
+  height: auto !important;
+  min-height: 300px !important;
+}
+
+.rbc-day-slot {
+  min-height: 300px !important;
+}
+
+.rbc-events-container {
+  height: auto !important;
+}
+
+/* Limit the number of time slots displayed */
+.rbc-time-content {
+  height: auto !important;
+  max-height: 300px !important;
+}
+
+/* Ensure time gutter has fixed width */
+.rbc-time-gutter,
+.rbc-time-header-gutter {
+  flex: 0 0 60px !important;
+  width: 60px !important;
+}
+
+/* Prevent the calendar from trying to create too many slots */
+.rbc-allday-cell {
+  height: 30px !important;
+  max-height: 30px !important;
+}
+
+/* Ensure the time slots have fixed heights */
+.rbc-timeslot-group {
+  min-height: 40px !important;
+  height: 40px !important;
+  max-height: 40px !important;
+}
+
+/* Prevent the calendar from calculating too many slots */
+.rbc-time-header-content {
+  height: auto !important;
+}
+
+/* Ensure the day headers have fixed heights */
+.rbc-header {
+  height: 40px !important;
+}
+
+/* Ensure the month view cells have fixed heights */
+.rbc-month-row {
+  overflow: hidden !important;
+}
+
+.rbc-month-row .rbc-row-content {
+  height: auto !important;
+}
+
+.rbc-date-cell {
+  height: auto !important;
+}
+
+/* Fix for the specific error in react-big-calendar.esm.js:2475 */
+.rbc-time-view .rbc-time-gutter .rbc-timeslot-group {
+  flex: 0 0 auto !important;
+}
+
+.rbc-time-view .rbc-day-slot {
+  flex: 0 0 auto !important;
+}
+
+.rbc-time-header.rbc-overflowing {
+  margin-right: 0 !important;
+}
+
+/* Prevent the calendar from creating too many slots */
+.rbc-slot-selection {
+  z-index: 10;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 75%;
+  width: 100%;
+  padding: 3px;
+}
+
+/* Force the calendar to use a simpler layout */
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid #DDD !important;
+}
+  
+  .rbc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .rbc-toolbar-label {
+    margin: 10px 0;
+  }
+  
+  .rbc-btn-group {
+    margin-bottom: 10px;
+  }
+  
+  /* Use agenda view on mobile instead of time view */
+  .calendar-section .rbc-time-view {
+    display: none;
+  }
+  
+  .calendar-section .rbc-month-view {
+    max-height: 300px;
+  }
+  /* Remove the extra closing brace that was here on line 382 */
+  /* Also remove this extra closing brace on line 383 */

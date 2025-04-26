@@ -1,0 +1,230 @@
+.whiteboard-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Add these styles to fix the duplicate objects issue */
+.konvajs-content {
+  position: absolute !important;
+}
+
+.konvajs-content canvas {
+  position: absolute !important;
+}
+
+/* Add these styles to ensure proper rendering during transformations */
+.konvajs-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.konvajs-content canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Ensure transformer handles are visible and properly sized */
+.konvajs-transformer-point {
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background-color: white !important;
+  border: 1px solid #0096ff !important;
+}
+
+.konvajs-transformer-rotater {
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background-color: white !important;
+  border: 1px solid #0096ff !important;
+}
+
+.toolbar-left {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.toolbar-left button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.toolbar-left button:hover {
+  background-color: #e0e0e0;
+}
+
+.toolbar-left button.active {
+  background-color: #d0d0d0;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.tool-icon, .nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.color-picker, .stroke-picker {
+  position: relative;
+}
+
+.color-button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  cursor: pointer;
+}
+
+.color-palette, .stroke-palette {
+  position: absolute;
+  left: 50px;
+  top: 0;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.color-option {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.stroke-option {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.stroke-option:hover {
+  background-color: #f0f0f0;
+}
+
+.stroke-option div {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add this new style for dot representation */
+.stroke-option div::before {
+  content: "";
+  display: block;
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background-color: black;
+}
+
+.page-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #f5f5f5;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.page-controls button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-controls span {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Add responsive styles for tablets and mobile devices */
+@media (max-width: 768px) {
+  .page-controls {
+    bottom: 10px;
+    padding: 8px 15px;
+  }
+  
+  .page-controls button {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .page-controls span {
+    font-size: 12px;
+  }
+}
+
+/* Ensure the navigation icons are visible */
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.logo-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.app-logo {
+  height: 50px;
+  width: auto;
+}
