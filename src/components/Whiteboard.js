@@ -50,7 +50,7 @@ const Whiteboard = () => {
   
   useEffect(() => {
     // Connect to the socket server
-    socketRef.current = io('http://192.168.178.232:5000');
+    socketRef.current = io('https://uyscuti.onrender.com');
     
     // Listen for drawing events from other users
     socketRef.current.on('draw', (data) => {
