@@ -13,8 +13,9 @@ app.use(express.static(path.join(__dirname, 'build')));
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "*",
-    methods: ["GET", "POST"]
+    origin: process.env.CORS_ORIGIN || "https://uyscuti.onrender.com",
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
