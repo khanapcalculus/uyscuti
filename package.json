@@ -28,7 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server.js",
-    "dev": "concurrently \"npm run server\" \"npm start\""
+    "dev": "concurrently \"npm run server\" \"react-scripts start\""
   },
   "eslintConfig": {
     "extends": [
@@ -50,5 +50,8 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
