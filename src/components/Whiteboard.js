@@ -48,9 +48,15 @@ const Whiteboard = () => {
   // Stroke width options
   const strokeWidths = [1, 3, 5, 8, 10, 15, 20, 25];
   
+ // ... existing code ...
   useEffect(() => {
     // Connect to the socket server
-    socketRef.current = io('https://uyscuti.onrender.com');
+    const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
+    socketRef.current = io(serverUrl, {
+      transports: ['websocket'],
+      secure: true
+    });
+// ... existing code ...
     
     // Listen for drawing events from other users
     socketRef.current.on('draw', (data) => {
