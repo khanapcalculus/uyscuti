@@ -26,20 +26,16 @@ const Whiteboard = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [stageSize, setStageSize] = useState({
     width: window.innerWidth,
-    // Double the height to make the canvas taller
-    height: window.innerHeight * 2
+    height: window.innerHeight*2
   });
   const [currentColor, setCurrentColor] = useState('#000000');
   const [currentStrokeWidth, setCurrentStrokeWidth] = useState(5);
   const [showColorPalette, setShowColorPalette] = useState(false);
   const [showStrokePalette, setShowStrokePalette] = useState(false);
-  // Add state for canvas position for scrolling
-  const [stagePosition, setStagePosition] = useState({ x: 0, y: 0 });
   
   const stageRef = useRef(null);
   const socketRef = useRef(null);
   const transformerRef = useRef(null);
-  const containerRef = useRef(null);
   
   // Color palette options
   const colors = [
@@ -50,8 +46,9 @@ const Whiteboard = () => {
   ];
   
   // Stroke width options
-  const strokeWidths = [1, 3, 5, 8, 10, 15, 20, 25];
+  const strokeWidths = [2, 3, 4, 5, 6, 7, 10, 15];
   
+ // ... existing code ...
   useEffect(() => {
     // Connect to the socket server
     const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:5000';
@@ -59,6 +56,7 @@ const Whiteboard = () => {
       transports: ['websocket'],
       secure: true
     });
+// ... existing code ...
     
     // Listen for drawing events from other users
     socketRef.current.on('draw', (data) => {
@@ -135,8 +133,7 @@ const Whiteboard = () => {
     const handleResize = () => {
       setStageSize({
         width: window.innerWidth,
-        // Maintain double height on resize
-        height: window.innerHeight * 2
+        height: window.innerHeight
       });
     };
     
@@ -163,98 +160,6 @@ const Whiteboard = () => {
       transformerRef.current.getLayer().batchDraw();
     }
   }, [selectedId]);
-  
-  // Handle scrolling events
-  const handleWheel = (e) => {
-    // Prevent default behavior
-    e.evt.preventDefault();
-    
-    // Get current position
-    const stage = stageRef.current;
-    
-    // Get the direction of the scroll
-    const newY = stagePosition.y - e.evt.deltaY;
-    
-    // Calculate the boundaries to prevent scrolling beyond canvas
-    const minY = -stageSize.height + window.innerHeight;
-    const maxY = 0;
-    
-    // Apply the new position with boundaries
-    setStagePosition({
-      x: stagePosition.x,
-      y: Math.min(maxY, Math.max(minY, newY))
-    });
-  };
-  
-  // Handle touch scrolling for tablets/mobile
-  const handleTouchScroll = (e) => {
-    if (isDrawing) return; // Don't scroll while drawing
-    
-    // Need at least two touches for pinch/zoom or scrolling
-    if (e.evt.touches.length !== 2) return;
-    
-    e.evt.preventDefault();
-    
-    const touch1 = e.evt.touches[0];
-    const touch2 = e.evt.touches[1];
-    
-    // Calculate the direction of movement
-    const touchCenterY = (touch1.clientY + touch2.clientY) / 2;
-    
-    if (!stageRef.current.lastTouchCenterY) {
-      stageRef.current.lastTouchCenterY = touchCenterY;
-      return;
-    }
-    
-    // Calculate movement delta
-    const deltaY = stageRef.current.lastTouchCenterY - touchCenterY;
-    stageRef.current.lastTouchCenterY = touchCenterY;
-    
-    // Update position
-    const newY = stagePosition.y - deltaY * 2; // Multiply by 2 for more responsive scrolling
-    
-    // Calculate boundaries
-    const minY = -stageSize.height + window.innerHeight;
-    const maxY = 0;
-    
-    // Apply the new position with boundaries
-    setStagePosition({
-      x: stagePosition.x,
-      y: Math.min(maxY, Math.max(minY, newY))
-    });
-  };
-  
-  // Reset touch center on touch end
-  const handleTouchEnd = (e) => {
-    setIsDrawing(false);
-    
-    if (!pages[currentPage]) return;
-    
-    if (tool === 'pen' || tool === 'eraser') {
-      const currentLines = pages[currentPage].lines;
-      if (currentLines && currentLines.length > 0) {
-        // Send the last drawn line to the server
-        socketRef.current.emit('draw', { 
-          line: currentLines[currentLines.length - 1],
-          page: currentPage
-        });
-      }
-    } else if (tool === 'rect' || tool === 'circle') {
-      const currentShapes = pages[currentPage].shapes;
-      if (currentShapes && currentShapes.length > 0) {
-        // Send the last created shape to the server
-        socketRef.current.emit('shape', { 
-          shape: currentShapes[currentShapes.length - 1],
-          page: currentPage
-        });
-      }
-    }
-    
-    // Reset touch center for scrolling
-    if (stageRef.current) {
-      stageRef.current.lastTouchCenterY = null;
-    }
-  };
   
   const handleMouseDown = (e) => {
     // Safety check - ensure the current page exists
@@ -421,15 +326,33 @@ const Whiteboard = () => {
       }
     };
     
+    const handleTouchEnd = () => {
+      setIsDrawing(false);
+      
+      if (!pages[currentPage]) return;
+      
+      if (tool === 'pen' || tool === 'eraser') {
+        const currentLines = pages[currentPage].lines;
+        if (currentLines && currentLines.length > 0) {
+          // Send the last drawn line to the server
+          socketRef.current.emit('draw', { 
+            line: currentLines[currentLines.length - 1],
+            page: currentPage
+          });
+        }
+      } else if (tool === 'rect' || tool === 'circle') {
+        const currentShapes = pages[currentPage].shapes;
+        if (currentShapes && currentShapes.length > 0) {
+          // Send the last created shape to the server
+          socketRef.current.emit('shape', { 
+            shape: currentShapes[currentShapes.length - 1],
+            page: currentPage
+          });
+        }
+      }
+    };
   const handleTouchMove = (e) => {
     e.evt.preventDefault();
-    
-    // Handle multi-touch scrolling
-    if (e.evt.touches.length === 2) {
-      handleTouchScroll(e);
-      return;
-    }
-    
     if (!isDrawing) return;
     
     const stage = stageRef.current;
@@ -453,6 +376,8 @@ const Whiteboard = () => {
       });
     }
   };
+  
+  // DELETE this second handleTouchEnd function (lines 362-382)
   
   const clearCanvas = () => {
     setPages(prevPages => {
@@ -488,11 +413,10 @@ const Whiteboard = () => {
       setCurrentPage(pageIndex);
       // Notify server about page change
       socketRef.current.emit('changePage', { page: pageIndex });
-      
-      // Reset scroll position when changing pages
-      setStagePosition({ x: 0, y: 0 });
     }
   };
+  
+  // Remove addNewPage function since we now have fixed pages
   
   const handleShapeTransform = (e) => {
     const shape = e.target;
@@ -613,7 +537,7 @@ const Whiteboard = () => {
   };
   
   return (
-    <div className="whiteboard-container" ref={containerRef}>
+    <div className="whiteboard-container">
       {/* Add logo in the top right */}
       <div className="logo-container">
         <img src={logoImage} alt="Whiteboard Logo" className="app-logo" />
@@ -730,129 +654,124 @@ const Whiteboard = () => {
         </div>
       </div>
       
-      {/* Wrap the Stage in a div with scroll capability */}
-      <div className="canvas-container">
-        <Stage
-          width={stageSize.width}
-          height={stageSize.height}
-          onMouseDown={handleMouseDown}
-          onMousemove={handleMouseMove}
-          onMouseup={handleMouseUp}
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          onWheel={handleWheel}
-          ref={stageRef}
-          style={{ border: '1px solid #ccc' }}
-          x={stagePosition.x}
-          y={stagePosition.y}
-        >
-          <Layer>
-            {/* Render lines */}
-            {pages[currentPage] && pages[currentPage].lines && pages[currentPage].lines.map((line, i) => (
-              <Line
-                key={i}
-                points={line.points}
-                stroke={line.stroke}
-                strokeWidth={line.strokeWidth}
-                tension={0.5}
-                lineCap="round"
-                lineJoin="round"
-                globalCompositeOperation={
-                  line.tool === 'eraser' ? 'destination-out' : 'source-over'
-                }
-              />
-            ))}
-            
-            {/* Render shapes with proper attributes */}
-            {pages[currentPage] && pages[currentPage].shapes && pages[currentPage].shapes.map((shape, i) => {
-              if (shape.type === 'rect') {
-                return (
-                  <Rect
-                    key={i}
-                    id={shape.id}
-                    x={shape.x}
-                    y={shape.y}
-                    width={shape.width}
-                    height={shape.height}
-                    fill={shape.fill}
-                    stroke={shape.stroke}
-                    strokeWidth={shape.strokeWidth}
-                    draggable={tool === 'select'}
-                    name="shape"
-                    onTransformEnd={handleShapeTransform}
-                    onDragEnd={handleShapeTransform}
-                    onClick={() => tool === 'select' && setSelectedId(shape.id)}
-                    onTap={() => tool === 'select' && setSelectedId(shape.id)}
-                    rotation={shape.rotation || 0}
-                    type="rect"
-                  />
-                );
-              } else if (shape.type === 'circle') {
-                return (
-                  <Circle
-                    key={i}
-                    id={shape.id}
-                    x={shape.x + shape.width / 2}
-                    y={shape.y + shape.height / 2}
-                    radius={Math.max(Math.abs(shape.width), Math.abs(shape.height)) / 2}
-                    fill={shape.fill}
-                    stroke={shape.stroke}
-                    strokeWidth={shape.strokeWidth}
-                    draggable={tool === 'select'}
-                    name="shape"
-                    onTransformEnd={handleShapeTransform}
-                    onDragEnd={handleShapeTransform}
-                    onClick={() => tool === 'select' && setSelectedId(shape.id)}
-                    onTap={() => tool === 'select' && setSelectedId(shape.id)}
-                    rotation={shape.rotation || 0}
-                    type="circle"
-                  />
-                );
-              } else if (shape.type === 'image') {
-                // Create a new image object for each image shape
-                const imageObj = new window.Image();
-                imageObj.src = shape.imageUrl;
-                
-                return (
-                  <Image
-                    key={i}
-                    id={shape.id}
-                    x={shape.x}
-                    y={shape.y}
-                    width={shape.width}
-                    height={shape.height}
-                    image={imageObj}
-                    draggable={tool === 'select'}
-                    name="shape"
-                    onTransformEnd={handleShapeTransform}
-                    onDragEnd={handleShapeTransform}
-                    onClick={() => tool === 'select' && setSelectedId(shape.id)}
-                    onTap={() => tool === 'select' && setSelectedId(shape.id)}
-                    rotation={shape.rotation || 0}
-                    type="image"
-                    imageUrl={shape.imageUrl}
-                  />
-                );
+      <Stage
+        width={stageSize.width}
+        height={stageSize.height}
+        onMouseDown={handleMouseDown}
+        onMousemove={handleMouseMove}
+        onMouseup={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        ref={stageRef}
+        style={{ border: '1px solid #ccc' }}
+      >
+        <Layer>
+          {/* Render lines */}
+          {pages[currentPage] && pages[currentPage].lines && pages[currentPage].lines.map((line, i) => (
+            <Line
+              key={i}
+              points={line.points}
+              stroke={line.stroke}
+              strokeWidth={line.strokeWidth}
+              tension={0.5}
+              lineCap="round"
+              lineJoin="round"
+              globalCompositeOperation={
+                line.tool === 'eraser' ? 'destination-out' : 'source-over'
               }
-              return null;
-            })}
-            
-            {/* Transformer for selected shapes */}
-            <Transformer
-              ref={transformerRef}
-              boundBoxFunc={(oldBox, newBox) => {
-                // Limit resize to a minimum size
-                if (newBox.width < 5 || newBox.height < 5) {
-                  return oldBox;
-                }
-                return newBox;
-              }}
-              anchorSize={8}
-              anchorCornerRadius={4}
-              enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
-              rotateEnabled={true}
- 	/>
+            />
+          ))}
+          
+          {/* Render shapes with proper attributes */}
+          {pages[currentPage] && pages[currentPage].shapes && pages[currentPage].shapes.map((shape, i) => {
+            if (shape.type === 'rect') {
+              return (
+                <Rect
+                  key={i}
+                  id={shape.id}
+                  x={shape.x}
+                  y={shape.y}
+                  width={shape.width}
+                  height={shape.height}
+                  fill={shape.fill}
+                  stroke={shape.stroke}
+                  strokeWidth={shape.strokeWidth}
+                  draggable={tool === 'select'}
+                  name="shape"
+                  onTransformEnd={handleShapeTransform}
+                  onDragEnd={handleShapeTransform}
+                  onClick={() => tool === 'select' && setSelectedId(shape.id)}
+                  onTap={() => tool === 'select' && setSelectedId(shape.id)}
+                  rotation={shape.rotation || 0}
+                  type="rect"
+                />
+              );
+            } else if (shape.type === 'circle') {
+              return (
+                <Circle
+                  key={i}
+                  id={shape.id}
+                  x={shape.x + shape.width / 2}
+                  y={shape.y + shape.height / 2}
+                  radius={Math.max(Math.abs(shape.width), Math.abs(shape.height)) / 2}
+                  fill={shape.fill}
+                  stroke={shape.stroke}
+                  strokeWidth={shape.strokeWidth}
+                  draggable={tool === 'select'}
+                  name="shape"
+                  onTransformEnd={handleShapeTransform}
+                  onDragEnd={handleShapeTransform}
+                  onClick={() => tool === 'select' && setSelectedId(shape.id)}
+                  onTap={() => tool === 'select' && setSelectedId(shape.id)}
+                  rotation={shape.rotation || 0}
+                  type="circle"
+                />
+              );
+            } else if (shape.type === 'image') {
+              // Create a new image object for each image shape
+              const imageObj = new window.Image();
+              imageObj.src = shape.imageUrl;
+              
+              return (
+                <Image
+                  key={i}
+                  id={shape.id}
+                  x={shape.x}
+                  y={shape.y}
+                  width={shape.width}
+                  height={shape.height}
+                  image={imageObj}
+                  draggable={tool === 'select'}
+                  name="shape"
+                  onTransformEnd={handleShapeTransform}
+                  onDragEnd={handleShapeTransform}
+                  onClick={() => tool === 'select' && setSelectedId(shape.id)}
+                  onTap={() => tool === 'select' && setSelectedId(shape.id)}
+                  rotation={shape.rotation || 0}
+                  type="image"
+                  imageUrl={shape.imageUrl}
+                />
+              );
+            }
+            return null;
+          })}
+          
+          {/* Transformer for selected shapes */}
+          <Transformer
+            ref={transformerRef}
+            boundBoxFunc={(oldBox, newBox) => {
+              // Limit resize to a minimum size
+              if (newBox.width < 5 || newBox.height < 5) {
+                return oldBox;
+              }
+              return newBox;
+            }}
+            anchorSize={8}
+            anchorCornerRadius={4}
+            enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+            rotateEnabled={true}
+          />
         </Layer>
       </Stage>
       
