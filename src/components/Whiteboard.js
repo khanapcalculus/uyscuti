@@ -26,7 +26,7 @@ const Whiteboard = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [stageSize, setStageSize] = useState({
     width: window.innerWidth,
-    height: window.innerHeight
+    height: window.innerHeight*2
   });
   const [currentColor, setCurrentColor] = useState('#000000');
   const [currentStrokeWidth, setCurrentStrokeWidth] = useState(5);
