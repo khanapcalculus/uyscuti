@@ -46,7 +46,7 @@ const Whiteboard = () => {
   ];
   
   // Stroke width options
-  const strokeWidths = [1, 3, 5, 8, 10, 15, 20, 25];
+  const strokeWidths = [2, 3, 4, 5, 6, 7, 10, 15];
   
  // ... existing code ...
   useEffect(() => {
